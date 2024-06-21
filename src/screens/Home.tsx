@@ -1,9 +1,72 @@
-import { View, Text } from "react-native"
+import { ExerciseCard } from "@components/ExerciseCard"
+import { Group } from "@components/Group"
+import { HomeHeader } from "@components/HomeHeader"
+import { useState } from "react"
+import { View, FlatList, Text } from "react-native"
+
+const GROUP_LIST = [
+  { name: "costas" },
+  { name: "ombro" },
+  { name: "peito" },
+  { name: "bicepts" },
+  { name: "perna" },
+]
 
 export function Home() {
+  const [exercises, setExercises] = useState(['Puxada frontal', 'Remada curvada', 'Rosca polia alta'])
+  const [groups, setGroups] = useState(GROUP_LIST)
+  const [groupSelected, setGroupSelected] = useState('costas')
+
   return (
-    <View className="flex flex-1 items-center justify-center">
-      <Text className="text-white">Home</Text>
+    <View className="flex-1 bg-gray-700">
+      <HomeHeader />
+
+      <FlatList
+        className="my-10 max-h-10"
+        data={groups}
+        keyExtractor={item => item.name}
+        renderItem={({ item }) => (
+          <Group
+            name={item.name}
+            onPress={() => setGroupSelected(item.name)}
+            isActive={
+              groupSelected.toLocaleUpperCase() 
+              === item.name.toLocaleUpperCase()
+            }
+          />
+        )}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: 32,
+          columnGap: 4,
+        }}
+      />
+
+      <View className="px-8">
+        <View className="flex-row justify-between mb-5">
+          <Text className="text-gray-200 text-md">
+            Exercícios
+          </Text>
+
+          <Text className="text-gray-200 text-sm">
+            {exercises.length}
+          </Text>
+        </View>
+
+
+        <FlatList
+          data={exercises}
+          keyExtractor={item => item}
+          renderItem={({ item }) => (
+            <ExerciseCard exercise={item} />
+          )}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingBottom: 20
+          }}
+        />
+      </View>
     </View>
   )
 }

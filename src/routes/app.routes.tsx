@@ -25,9 +25,6 @@ const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>()
 
 export function AppRoutes() {
   const iconSize = 24
-  const activeIconColor = colors.green[500]
-  const inativeIconColor = "#00875F"
-  const backgroundColor = "#202024"
 
   return (
     <Navigator screenOptions={{
