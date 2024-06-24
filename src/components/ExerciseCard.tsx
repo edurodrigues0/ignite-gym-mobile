@@ -24,7 +24,7 @@ export function ExerciseCard({ exercise, ...rest }: Props) {
           alt="Imagem do exercicio"
           width={64}
           height={64}
-          className="rounded-md object-scale-down"
+          className="rounded-md object-cover"
         />
 
         <View className="flex-1 ml-4">
