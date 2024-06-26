@@ -6,11 +6,29 @@ import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 import { useNavigation } from "@react-navigation/native";
 
+import { useForm, Controller } from 'react-hook-form'
+
+type FormDataProps = {
+  name: string
+  email: string
+  password: string
+  password_confirm: string
+}
+
 export function SignUp() {
+  const { control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormDataProps>()
+
   const navigation = useNavigation()
 
   function handleGoBack() {
     navigation.goBack()
+  }
+
+  function handleSignUp (data: FormDataProps) {
+    console.log({data})
   }
 
   return (
@@ -38,22 +56,80 @@ export function SignUp() {
             Crie sua conta
           </Text>
 
-          <Input 
-            placeholder="Nome"
+          <Controller
+            control={control}
+            name="name"
+            rules={{
+              required: 'Informe o nome'
+            }}
+            render={({ field: { onChange, value }}) => (
+              <Input
+                value={value}
+                onChangeText={onChange}
+                placeholder="Nome"
+                errorMessage={errors.name?.message}
+              />
+            )}
           />
 
-          <Input 
-            placeholder="E-mail"
-            keyboardType="email-address"
-            autoCapitalize="none"
+          <Controller
+            control={control}
+            name="email"
+            rules={{
+              required: 'Informe o e-mail',
+              pattern: {
+                value:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'E-mail inválido'
+              }
+            }}
+            render={({ field: { onChange, value }}) => (
+              <Input
+                value={value}
+                onChangeText={onChange}
+                placeholder="E-mail"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                errorMessage={errors.email?.message}
+              />
+            )}
           />
 
-          <Input 
-            placeholder="Senha"
-            secureTextEntry
+          <Controller
+            control={control}
+            name="password"
+            rules={{
+              required: 'Informe a senha',
+              minLength: 6,
+            }}
+            render={({ field: { onChange, value }}) => (
+              <Input
+                value={value}
+                onChangeText={onChange}
+                placeholder="Senha"
+                secureTextEntry
+              />
+            )}
+          />
+          
+          <Controller
+            control={control}
+            name="password_confirm"
+            render={({ field: { onChange, value }}) => (
+              <Input
+                value={value}
+                onChangeText={onChange}
+                onSubmitEditing={handleSubmit(handleSignUp)}
+                returnKeyType="send"
+                placeholder="Confime a Senha"
+                secureTextEntry
+              />
+            )}
           />
 
-          <Button title="Criar e acessar" />
+          <Button
+            onPress={handleSubmit(handleSignUp)}
+            title="Criar e acessar"
+          />
         </View>
 
         <View className="mt-24">
