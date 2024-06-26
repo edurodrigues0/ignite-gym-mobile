@@ -25,7 +25,13 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermissions": "The app access your photos to let you share them with your frieds."
+        }
+      ]
     ]
   }
 }
