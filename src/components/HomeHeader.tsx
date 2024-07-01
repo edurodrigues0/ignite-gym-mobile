@@ -18,7 +18,7 @@ export function HomeHeader() {
       
       <View className="flex-1">
         <Text className="text-gray-100 text-md">Olá,</Text>
-        <Text className="text-gray-100 text-md font-bold">Eduardo</Text>
+        <Text className="text-gray-100 text-md font-heading">Eduardo</Text>
       </View>
 
       <TouchableOpacity>

@@ -29,7 +29,7 @@ export function Exercise() {
         </TouchableOpacity>
 
         <View className="mb-8 flex-row items-center justify-between">
-          <Text className="text-gray-100 text-lg shrink">
+          <Text className="text-gray-100 text-lg font-heading shrink">
             Puxada frontal
           </Text>
 

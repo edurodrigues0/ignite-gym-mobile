@@ -9,7 +9,6 @@ type Props = TextInputProps & {
 export function Input({errorMessage, isInvalid, bg = "bg-gray-700", ...rest}: Props) {
   const invalid = !!errorMessage || isInvalid
 
-  console.log(invalid)
   return (
     <View className='mb-4 w-full flex-col gap-1'>
       <TextInput

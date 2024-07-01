@@ -1,3 +1,4 @@
+import * as yup from "yup";
 import { View, Image, Text, ScrollView } from 'react-native';
 
 import LogoSvg from '../../assets/logo.svg'
@@ -7,12 +8,37 @@ import { Button } from '@components/Button'
 import { useNavigation } from '@react-navigation/native'
 
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+type FormDataProps = {
+  email: string
+  password: string
+}
+
+const signInSchema = yup.object({
+  email: yup.string().required("Informe o e-mail").email("E-mail Inválido."),
+  password: yup.string().required("Informe a senh.").min(6, "A senha deve ter pelo menos 6 dígitos."),
+})
+
 
 export function SignIn() {
+  const { control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormDataProps>({
+    resolver: yupResolver(signInSchema)
+  })
+
+
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
   
   function handleNewAccount() {
     navigation.navigate('signUp')
+  }
+
+  function handleSignIn (data: FormDataProps) {
+    console.log({data})
   }
 
   return (
@@ -38,18 +64,39 @@ export function SignIn() {
             Acesse sua conta
           </Text>
 
-          <Input 
-            placeholder="E-mail"
-            keyboardType="email-address"
-            autoCapitalize="none"
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, value }}) => (
+              <Input
+                value={value}
+                onChangeText={onChange}
+                placeholder="E-mail"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                errorMessage={errors.email?.message}
+              />
+            )}
           />
 
-          <Input 
-            placeholder="Senha"
-            secureTextEntry
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, value }}) => (
+              <Input
+                value={value}
+                onChangeText={onChange}
+                placeholder="Senha"
+                secureTextEntry
+                errorMessage={errors.password?.message}
+              />
+            )}
           />
 
-          <Button title="Acessar" />
+          <Button
+            onPress={handleSubmit(handleSignIn)}
+            title="Acessar"
+          />
         </View>
         
         <Text className="text-gray-100 text-sm font-body mx-auto mt-24 mb-3">

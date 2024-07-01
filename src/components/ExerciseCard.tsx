@@ -28,7 +28,7 @@ export function ExerciseCard({ exercise, ...rest }: Props) {
         />
 
         <View className="flex-1 ml-4">
-          <Text className="text-lg text-white">
+          <Text className="text-lg text-white font-heading">
             { exercise }
           </Text>
 

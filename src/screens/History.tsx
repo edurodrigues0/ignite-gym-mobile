@@ -27,7 +27,7 @@ export function History() {
           </View>
         )}
         renderSectionHeader={({ section }) => (
-          <Text className="text-gray-200 text-md mt-10 mb-3 px-8">
+          <Text className="text-gray-200 text-md font-heading mt-10 mb-3 px-8">
             {section.title}
           </Text>
         )}

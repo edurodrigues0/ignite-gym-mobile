@@ -53,7 +53,7 @@ export function Home() {
 
       <View className="px-8">
         <View className="flex-row justify-between mb-5">
-          <Text className="text-gray-200 text-md">
+          <Text className="text-gray-200 text-md font-heading">
             Exercícios
           </Text>
 
