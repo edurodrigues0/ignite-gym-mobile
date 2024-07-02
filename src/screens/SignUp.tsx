@@ -9,6 +9,11 @@ import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-root-toast"
+
+import { api } from "../services/api"
+import { AppError } from "@utils/AppError";
+import { useState } from "react";
 
 type FormDataProps = {
   name: string
@@ -25,6 +30,8 @@ const signUpSchema = yup.object({
 })
 
 export function SignUp() {
+  const [isLoading, setIsLoading] = useState(false)
+
   const { control,
     handleSubmit,
     formState: { errors },
@@ -38,8 +45,24 @@ export function SignUp() {
     navigation.goBack()
   }
 
-  function handleSignUp (data: FormDataProps) {
-    console.log({data})
+  const handleSignUp = async ({ name, email, password }: FormDataProps) => {
+    console.log("cadastro iniciado")
+    setIsLoading(true)
+    try {
+      const response = await api.post("/users", { name, email, password })
+
+      console.log("cadastro finalizado")
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const title = isAppError ? error.message : 'Não foi possível criar a conta. Tenta novamente mais tarde.'
+            
+      Toast.show(title, {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.TOP
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -136,6 +159,7 @@ export function SignUp() {
             title="Voltar para o login"
             variant="outline"
             onPress={handleGoBack}
+            disabled={isLoading}
           />
         </View>
       </View>

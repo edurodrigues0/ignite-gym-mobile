@@ -1,9 +1,11 @@
-import { View, StatusBar } from 'react-native';
-import { useFonts, Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto';
-import React from 'react';
 import "./global.css"
+
+import React from 'react';
+import { useFonts, Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto';
+import { View, StatusBar } from 'react-native';
 import { Loading } from '@components/Loading';
 import { Routes } from '@routes/index';
+import { AuthContextProvider } from '@contexts/AuthContext';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -18,7 +20,9 @@ export default function App() {
         backgroundColor="transparent"
         translucent
       />
-      {fontsLoaded ? <Routes /> : <Loading />}
+      <AuthContextProvider>
+        {fontsLoaded ? <Routes /> : <Loading />}
+      </AuthContextProvider>
     </View>
   );
 }
