@@ -10,6 +10,11 @@ import { useNavigation } from '@react-navigation/native'
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useAuth } from "@hooks/useAuth";
+import { AppError } from "@utils/AppError";
+import Toast from "react-native-root-toast";
+import { useState } from "react";
+import { isLoading } from "expo-font";
 
 type FormDataProps = {
   email: string
@@ -23,6 +28,9 @@ const signInSchema = yup.object({
 
 
 export function SignIn() {
+  const [isLoading, setIsLoading] = useState(false)
+  const { signIn } = useAuth()
+
   const { control,
     handleSubmit,
     formState: { errors },
@@ -37,8 +45,25 @@ export function SignIn() {
     navigation.navigate('signUp')
   }
 
-  function handleSignIn (data: FormDataProps) {
-    console.log({data})
+  async function handleSignIn ({email, password}: FormDataProps) {
+    try {
+      setIsLoading(true)
+      await signIn(email, password)
+    } catch (error) {
+      if (error instanceof AppError) {
+        setIsLoading(false)
+        return Toast.show(error.message, {
+          duration: Toast.durations.LONG,
+          position: Toast.positions.TOP
+        })
+      }
+      setIsLoading(false)
+
+      Toast.show("Nao foi possivel acessar a conta. Tente mais tarde!", {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.TOP
+      })
+    }
   }
 
   return (
@@ -94,6 +119,7 @@ export function SignIn() {
           />
 
           <Button
+            disabled={isLoading}
             onPress={handleSubmit(handleSignIn)}
             title="Acessar"
           />
