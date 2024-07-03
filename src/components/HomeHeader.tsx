@@ -2,18 +2,26 @@ import { View, Text, TouchableOpacity } from "react-native"
 import { MaterialIcons } from "@expo/vector-icons"
 
 import { UserPhoto } from "./UserPhoto"
-import colors from "../theme/colors"
 import { useAuth } from "@hooks/useAuth"
 
+import colors from "../theme/colors"
+import defaultUserPhotoImg from "@assets/userPhotoDefault.png"
+
 export function HomeHeader() {
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
+
+  async function handleSignOut() {
+    await signOut()
+  }
 
   return (
     <View className="flex-row items-center bg-gray-600 pt-16 pb-5 px-8">
       <UserPhoto
         size={64}
-        source={{
+        source={user?.avatar ? {
           uri: user?.avatar
+        } : {
+          uri: defaultUserPhotoImg
         }}
         alt="Foto do usuario"
         className="mr-4"
@@ -24,7 +32,7 @@ export function HomeHeader() {
         <Text className="text-gray-100 text-md font-heading">{user?.name}</Text>
       </View>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => handleSignOut()}>
         <MaterialIcons
           name="logout"
           color={colors.gray[200]}

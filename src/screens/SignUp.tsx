@@ -14,6 +14,7 @@ import Toast from "react-native-root-toast"
 import { api } from "../services/api"
 import { AppError } from "@utils/AppError";
 import { useState } from "react";
+import { useAuth } from "@hooks/useAuth";
 
 type FormDataProps = {
   name: string
@@ -31,6 +32,7 @@ const signUpSchema = yup.object({
 
 export function SignUp() {
   const [isLoading, setIsLoading] = useState(false)
+  const { signIn } = useAuth()
 
   const { control,
     handleSubmit,
@@ -46,12 +48,12 @@ export function SignUp() {
   }
 
   const handleSignUp = async ({ name, email, password }: FormDataProps) => {
-    console.log("cadastro iniciado")
-    setIsLoading(true)
     try {
-      const response = await api.post("/users", { name, email, password })
+      setIsLoading(true)
 
-      console.log("cadastro finalizado")
+      await api.post("/users", { name, email, password })
+
+      await signIn(email, password)
     } catch (error) {
       const isAppError = error instanceof AppError
       const title = isAppError ? error.message : 'Não foi possível criar a conta. Tenta novamente mais tarde.'
