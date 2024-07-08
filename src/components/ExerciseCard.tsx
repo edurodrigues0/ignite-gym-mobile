@@ -8,18 +8,21 @@ import {
 import { Entypo } from "@expo/vector-icons"
 
 import colors from 'tailwindcss/colors'
+import { ExerciseDTO } from "@dtos/ExerciseDTO"
+import { api } from "@services/api"
 
 type Props = TouchableHighlightProps & {
-  exercise: string
+  data: ExerciseDTO
 }
 
-export function ExerciseCard({ exercise, ...rest }: Props) {
+export function ExerciseCard({ data, ...rest }: Props) {
+  console.log(`${api.defaults.baseURL}/exercises/thumb/${data.thumb}`)
   return (
     <TouchableOpacity {...rest}>
       <View className="flex-row bg-gray-500 items-center p-2 pr-4 mb-3 rounded-md">
         <Image
           source={{
-            uri: "https://v4excellencefitness.com.br/wp-content/uploads/2023/05/rosca-21s-capa-1024x739.webp"
+            uri: `${api.defaults.baseURL}/exercises/thumb/${data.thumb}`
           }}
           alt="Imagem do exercicio"
           width={64}
@@ -29,11 +32,11 @@ export function ExerciseCard({ exercise, ...rest }: Props) {
 
         <View className="flex-1 ml-4">
           <Text className="text-lg text-white font-heading">
-            { exercise }
+            { data.name }
           </Text>
 
           <Text className="text-sm text-gray-200 mt-1 line-clamp-2">
-            3 séries x 12 repetições
+            {data.series} séries x {data.repetitions} repetições
           </Text>
         </View>
 

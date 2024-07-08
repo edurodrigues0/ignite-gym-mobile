@@ -11,7 +11,7 @@ import { UserDTO } from "@dtos/UserDTO";
 import { api } from "@services/api";
 
 export type AuthContextDataProps = {
-  user: UserDTO | undefined
+  user: UserDTO
   signIn: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
   isLoadingUserStorageData: boolean

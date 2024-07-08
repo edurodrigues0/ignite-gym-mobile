@@ -1,23 +1,26 @@
 import { ExerciseCard } from "@components/ExerciseCard"
 import { Group } from "@components/Group"
 import { HomeHeader } from "@components/HomeHeader"
-import { useNavigation } from "@react-navigation/native"
+import { Loading } from "@components/Loading"
+import { ExerciseDTO } from "@dtos/ExerciseDTO"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 import { api } from "@services/api"
 import { AppError } from "@utils/AppError"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { View, FlatList, Text } from "react-native"
 import Toast from "react-native-root-toast"
 
 export function Home() {
-  const [exercises, setExercises] = useState(['Puxada frontal', 'Remada curvada', 'Rosca polia alta'])
+  const [exercises, setExercises] = useState<ExerciseDTO[]>([])
   const [groups, setGroups] = useState<string[]>([])
-  const [groupSelected, setGroupSelected] = useState('costas')
+  const [groupSelected, setGroupSelected] = useState('antebraço')
+  const [isLoading, setIsLoading] = useState(true)
 
   const navigation = useNavigation<AppNavigatorRoutesProps>()
 
-  function handleOpenExerciseDetails() {
-    navigation.navigate('exercise')
+  function handleOpenExerciseDetails(exerciseId: string) {
+    navigation.navigate('exercise', { exerciseId })
   }
 
   async function fetchGroups() {
@@ -35,9 +38,32 @@ export function Home() {
     }
   }
 
+  async function fetchExercisesByGroup() {
+    try {
+      setIsLoading(true)
+      const response = await api.get(`/exercises/bygroup/${groupSelected}`)
+      console.log(response.data)
+
+      setExercises(response.data)
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const title = isAppError ? error.message : "Não foi possível carregar os exercícios."
+      Toast.show(title, {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.TOP,
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
     fetchGroups()
   }, [])
+
+  useFocusEffect(useCallback(() => {
+    fetchExercisesByGroup()
+  }, [groupSelected]))
 
   return (
     <View className="flex-1 bg-gray-700">
@@ -65,33 +91,39 @@ export function Home() {
         }}
       />
 
-      <View className="px-8">
-        <View className="flex-row justify-between mb-5">
-          <Text className="text-gray-200 text-md font-heading">
-            Exercícios
-          </Text>
+      {
+        isLoading ?
+          <Loading /> :
+          (
+            <View className="px-8">
+              <View className="flex-row justify-between mb-5">
+                <Text className="text-gray-200 text-md font-heading">
+                  Exercícios
+                </Text>
 
-          <Text className="text-gray-200 text-sm">
-            {exercises.length}
-          </Text>
-        </View>
+                <Text className="text-gray-200 text-sm">
+                  {exercises.length}
+                </Text>
+              </View>
 
 
-        <FlatList
-          data={exercises}
-          keyExtractor={item => item}
-          renderItem={({ item }) => (
-            <ExerciseCard
-              onPress={handleOpenExerciseDetails}
-              exercise={item}
-            />
-          )}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingBottom: 20
-          }}
-        />
-      </View>
+              <FlatList
+                data={exercises}
+                keyExtractor={item => item.id}
+                renderItem={({ item }) => (
+                  <ExerciseCard
+                    onPress={() => handleOpenExerciseDetails(item.id)}
+                    data={item}
+                  />
+                )}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingBottom: 20
+                }}
+              />
+            </View>
+          )
+    }
     </View>
   )
 }

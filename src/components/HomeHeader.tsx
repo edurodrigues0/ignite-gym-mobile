@@ -5,7 +5,7 @@ import { UserPhoto } from "./UserPhoto"
 import { useAuth } from "@hooks/useAuth"
 
 import colors from "../theme/colors"
-import defaultUserPhotoImg from "@assets/userPhotoDefault.png"
+import defaultUserPhotoImg from "../../assets/userPhotoDefault.png"
 
 export function HomeHeader() {
   const { user, signOut } = useAuth()
@@ -18,11 +18,10 @@ export function HomeHeader() {
     <View className="flex-row items-center bg-gray-600 pt-16 pb-5 px-8">
       <UserPhoto
         size={64}
-        source={user?.avatar ? {
-          uri: user?.avatar
-        } : {
-          uri: defaultUserPhotoImg
+        source={{
+          uri: user.avatar
         }}
+        defaultSource={defaultUserPhotoImg}
         alt="Foto do usuario"
         className="mr-4"
       />

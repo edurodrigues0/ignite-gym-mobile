@@ -9,7 +9,7 @@ export function UserPhoto({ size, className, ...rest}: Props) {
   const classStyle = "rounded-full border-2 border-gray-400"
   
   return (
-    <Image 
+    <Image
       width={size}
       height={size}
       className={`${classStyle} ${className}`}
